@@ -1,0 +1,44 @@
+name: Scheduled deploy
+
+on:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    # https://crontab.guru/
+    # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
+    # minute hour day(in month) month day(in week)
+    - cron:  '1 0 4 3 *'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    # env:
+      # SERVER_IP: 000.000.00.00
+      # SERVER_PORT: 22
+      # SSH_USERNAME: username
+      # SSH_KEY: ${{ secrets.PRODUCTION_SSH_KEY }}
+      # SOURCE_DIR: 'build'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: echo Maybe run `yarn`
+      - name: Create folders
+        # https://github.com/appleboy/ssh-action
+        uses: appleboy/ssh-action@master
+        # with:
+          # host: ${{ env.SERVER_IP }}
+          # username: ${{ env.SSH_USERNAME }}
+          # key: ${{ env.SSH_KEY }}
+          # port: 22
+          # script: mkdir -p /var/www/yourdomain.com
+      - name: Deploy
+        uses: AEnterprise/rsync-deploy@1.0.1
+        # env:
+          # ARGS: "-e -c -r --delete"
+          # DEPLOY_KEY: ${{ env.SSH_KEY }}
+          # USERNAME: ${{ env.SSH_USERNAME }}
+          # FOLDER: "./${{ env.SOURCE_DIR }}/"
+          # SERVER_DESTINATION: '/var/www/yourdomain.com/'
